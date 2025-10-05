@@ -6,7 +6,7 @@ _Onpu_ 是一个使用 AI 生成音乐的 SaaS 平台，可以从简单的文本
 
 ## 在线体验
 
-TODO
+https://onpu.vercel.app
 
 _Demo 实例受成本限制，目前无法稳定提供服务。如果这个项目对你有价值，欢迎[为我充电](https://space.bilibili.com/281356255)！_
 
