@@ -1,8 +1,8 @@
 # Onpu - AI 音乐生成平台
 
-_Onpu_ 是一个使用 AI 生成音乐的 SaaS 平台，可以从简单的文本描述、自定义歌词或风格提示中创作音乐。
+_Onpu_ 是一个使用 AI 生成音乐的 SaaS 平台，可以从简单的文本描述、自定义歌词或风格提示中创作音乐
 
-平台集成了包括 Better Auth 用户认证、使用 Polar.sh 的积分支付系统，以及用于处理 AI 工作流的后台队列 Inngest 等技术。
+平台集成了包括 Better Auth 用户认证、Polar.sh 积分支付，以及用于处理 AI 工作流的后台队列 Inngest 等技术
 
 ## 在线体验
 
@@ -14,23 +14,23 @@ _Demo 实例受成本限制，目前无法稳定提供服务。如果这个项�
 
 **AI**
 
-- 音乐生成模型: ACE-Step
-- 歌词生成模型: Qwen/Qwen2.5-7B-Instruct
-- 封面生成模型: stabilityai/sdxl-turbo
-- 对象存储: Cloudflare R2
-- 推理设施: Modal
-- 工作流: Inngest
+- 音乐生成模型: [ACE-Step](https://github.com/ace-step/ACE-Step)
+- 歌词生成模型: [Qwen/Qwen2.5-7B-Instruct](https://huggingface.co/Qwen/Qwen2.5-7B-Instruct)
+- 封面生成模型: [stabilityai/sdxl-turbo](https://huggingface.co/stabilityai/sdxl-turbo)
+- 对象存储: [Cloudflare R2](https://developers.cloudflare.com/r2)
+- 推理设施: [Modal](https://modal.com)
+- 工作流: [Inngest](https://github.com/inngest/inngest)
 
 **Web**
 
-- Next.js
-- Zustand
-- Tailwind CSS
-- shadcn/ui
-- Better Auth
-- Drizzle ORM
-- PostgreSQL
-- Polar.sh
+- [Next.js](https://nextjs.org)
+- [Zustand](https://github.com/pmndrs/zustand)
+- [Tailwind CSS](https://tailwindcss.com)
+- [shadcn/ui](https://ui.shadcn.com)
+- [Better Auth](https://www.better-auth.com)
+- [Drizzle ORM](https://orm.drizzle.team)
+- [PostgreSQL](https://www.postgresql.org)
+- [Polar.sh](https://polar.sh)
 
 ## 运行
 
@@ -123,7 +123,7 @@ NEXT_PUBLIC_POLAR_LARGE_CREDIT_PACK=
 npm run dev
 ```
 
-### Inngest 本地队列开发
+### Inngest 队列本地开发服务器
 
 ```bash
 cd web
