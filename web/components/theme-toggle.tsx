@@ -13,6 +13,29 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
+  const handleToggle = () => {
+    const next = resolvedTheme === "light" ? "dark" : "light";
+    const prefersReduced =
+      typeof window !== "undefined" &&
+      window.matchMedia &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    const hasViewTransition =
+      typeof document !== "undefined" &&
+      (document as unknown as { startViewTransition?: (cb: () => void) => unknown }).startViewTransition;
+
+    if (!hasViewTransition || prefersReduced) {
+      setTheme(next);
+      return;
+    }
+
+    (document as unknown as { startViewTransition: (cb: () => void) => unknown }).startViewTransition(
+      () => {
+        setTheme(next);
+      }
+    );
+  };
+
   if (!mounted) {
     return (
       <Button variant="ghost" size="icon" disabled>
@@ -26,7 +49,7 @@ export function ThemeToggle() {
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(resolvedTheme === "light" ? "dark" : "light")}
+      onClick={handleToggle}
     >
       {resolvedTheme === "light" ? (
         <Moon className="h-[1.2rem] w-[1.2rem]" />
