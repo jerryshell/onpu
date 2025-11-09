@@ -42,26 +42,86 @@ _Demo 实例受成本限制，目前无法稳定提供服务。如果这个项�
 git clone https://github.com/jerryshell/onpu.git
 ```
 
-### 安装 Python
-
-请下载并安装 Python 3.12: https://www.python.org/downloads
-
 ### AI
-
-安装依赖项
-
-```bash
-cd ai
-```
-
-```bash
-pip install -r requirements.txt
-```
 
 Modal 设置
 
 ```bash
 modal setup
+```
+
+配置 Modal Secrets
+
+需要在 Modal 中创建名为 `onpu-secret` 的 Secret，包含以下环境变量：
+
+- `S3_ENDPOINT_URL`: S3 兼容存储的端点 URL
+- `S3_BUCKET_NAME`: S3 存储桶名称
+- `S3_AWS_ACCESS_KEY_ID`: S3 访问密钥 ID
+- `S3_AWS_SECRET_ACCESS_KEY`: S3 访问密钥
+
+API 端点
+
+项目提供三个主要的音乐生成 API 端点：
+
+1. **从描述生成音乐** (`generate_from_description`)
+
+   - 输入：完整的音乐描述文本
+   - 自动生成提示词和歌词
+   - 请求参数：
+     ```python
+     {
+       "full_described_song": str,  # 完整的音乐描述
+       "audio_duration": float,     # 音频时长（秒），默认 180.0
+       "seed": int,                 # 随机种子，-1 为随机
+       "guidance_scale": float,      # 引导强度，默认 15.0
+       "infer_step": int,           # 推理步数，默认 60
+       "instrumental": bool          # 是否为纯音乐，默认 False
+     }
+     ```
+
+2. **使用自定义歌词生成** (`generate_with_lyrics`)
+
+   - 输入：提示词和自定义歌词
+   - 请求参数：
+     ```python
+     {
+       "prompt": str,               # 音乐风格提示词
+       "lyrics": str,               # 自定义歌词
+       "audio_duration": float,     # 音频时长（秒），默认 180.0
+       "seed": int,                 # 随机种子，-1 为随机
+       "guidance_scale": float,      # 引导强度，默认 15.0
+       "infer_step": int,           # 推理步数，默认 60
+       "instrumental": bool          # 是否为纯音乐，默认 False
+     }
+     ```
+
+3. **使用描述的歌词生成** (`generate_with_described_lyrics`)
+
+   - 输入：提示词和歌词描述
+   - 自动根据描述生成歌词
+   - 请求参数：
+     ```python
+     {
+       "prompt": str,               # 音乐风格提示词
+       "described_lyrics": str,     # 歌词描述
+       "audio_duration": float,     # 音频时长（秒），默认 180.0
+       "seed": int,                 # 随机种子，-1 为随机
+       "guidance_scale": float,     # 引导强度，默认 15.0
+       "infer_step": int,           # 推理步数，默认 60
+       "instrumental": bool         # 是否为纯音乐，默认 False
+     }
+     ```
+
+响应格式
+
+所有 API 端点返回以下格式：
+
+```python
+{
+  "s3_key": str,              # 音频文件在 S3 中的键
+  "cover_image_s3_key": str,  # 封面图在 S3 中的键
+  "categories": List[str]     # 音乐分类标签列表
+}
 ```
 
 Modal 本地运行

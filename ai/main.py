@@ -13,12 +13,21 @@ app = modal.App("onpu")
 
 image = (
     modal.Image.debian_slim(python_version="3.12")
-    .apt_install("git")
-    .pip_install_from_requirements("requirements.txt")
+    .apt_install("git", "ffmpeg")
+    .uv_pip_install(
+        "transformers",
+        "diffusers",
+        "torch",
+        "torchcodec",
+        "pydantic",
+        "boto3",
+        "modal",
+        "requests",
+    )
     .run_commands(
         [
             "git clone https://github.com/ace-step/ACE-Step.git /tmp/ACE-Step",
-            "cd /tmp/ACE-Step && pip install .",
+            "cd /tmp/ACE-Step && uv pip install --system .",
         ]
     )
     .env({"HF_HOME": "/.cache/huggingface"})
@@ -284,42 +293,46 @@ class MusicGenServer:
         )
 
 
-# @app.local_entrypoint()
-# def main():
-#     server = MusicGenServer()
-#     endpoint_url = server.generate.get_web_url()
-
-#     response = requests.post(endpoint_url)
-#     response.raise_for_status()
-#     result = GenerateMusicResponse(**response.json())
-
-#     audio_bytes = base64.b64decode(result.audio_data)
-#     output_filename = "generated.wav"
-#     with open(output_filename, "wb") as f:
-#         f.write(audio_bytes)
-
-
 @app.local_entrypoint()
 def main():
     server = MusicGenServer()
-    endpoint_url = server.generate_with_described_lyrics.get_web_url()
+    endpoint_url = server.generate.get_web_url()
 
-    request_data = GenerateWithDescribedLyricsRequest(
-        prompt="rave, funk, 140BPM, disco",
-        described_lyrics="lyrics about water bottles",
-        guidance_scale=15,
-    )
-
-    payload = request_data.model_dump()
-
-    # https://modal.com/settings/xxx/proxy-auth-tokens
     headers = {
         "Modal-Key": "wk-xxx",
         "Modal-Secret": "ws-xxx",
     }
 
-    response = requests.post(endpoint_url, headers=headers, json=payload)
+    response = requests.post(endpoint_url, headers=headers)
     response.raise_for_status()
-    result = GenerateMusicResponseS3(**response.json())
+    result = GenerateMusicResponse(**response.json())
 
-    print(f"Success: {result.s3_key} {result.cover_image_s3_key} {result.categories}")
+    audio_bytes = base64.b64decode(result.audio_data)
+    output_filename = "generated.wav"
+    with open(output_filename, "wb") as f:
+        f.write(audio_bytes)
+
+
+# @app.local_entrypoint()
+# def main():
+#     server = MusicGenServer()
+#     endpoint_url = server.generate_with_described_lyrics.get_web_url()
+
+#     request_data = GenerateWithDescribedLyricsRequest(
+#         prompt="rave, funk, 140BPM, disco",
+#         described_lyrics="lyrics about water bottles",
+#         guidance_scale=15,
+#     )
+
+#     payload = request_data.model_dump()
+
+#     headers = {
+#         "Modal-Key": "wk-xxx",
+#         "Modal-Secret": "ws-xxx",
+#     }
+
+#     response = requests.post(endpoint_url, headers=headers, json=payload)
+#     response.raise_for_status()
+#     result = GenerateMusicResponseS3(**response.json())
+
+#     print(f"Success: {result.s3_key} {result.cover_image_s3_key} {result.categories}")
